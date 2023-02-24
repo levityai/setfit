@@ -96,6 +96,7 @@ class SetFitTrainer:
         distance_metric: Callable = BatchHardTripletLossDistanceFunction.cosine_distance,
         margin: float = 0.25,
         samples_per_label: int = 2,
+        callback_for_training_progress : Callable [[int,int],None] =None
     ):
         if (warmup_proportion < 0.0) or (warmup_proportion > 1.0):
             raise ValueError(
@@ -118,6 +119,7 @@ class SetFitTrainer:
         self.distance_metric = distance_metric
         self.margin = margin
         self.samples_per_label = samples_per_label
+        self.callback_for_training_progress = callback_for_training_progress
 
         if model is None:
             if model_init is not None:
@@ -394,6 +396,7 @@ class SetFitTrainer:
                 warmup_steps=warmup_steps,
                 show_progress_bar=show_progress_bar,
                 use_amp=self.use_amp,
+                callback_for_training_progress = self.callback_for_training_progress
             )
 
         if not self.model.has_differentiable_head or not self._freeze:
