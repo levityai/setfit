@@ -16,7 +16,6 @@ from .integrations import default_hp_search_backend, is_optuna_available, run_hp
 from .modeling import SupConLoss, sentence_pairs_generation, sentence_pairs_generation_multilabel
 from .utils import BestRun, default_hp_space_optuna
 
-
 if TYPE_CHECKING:
     import optuna
     from datasets import Dataset
@@ -78,25 +77,25 @@ class SetFitTrainer:
     """
 
     def __init__(
-        self,
-        model: Optional["SetFitModel"] = None,
-        train_dataset: Optional["Dataset"] = None,
-        eval_dataset: Optional["Dataset"] = None,
-        model_init: Optional[Callable[[], "SetFitModel"]] = None,
-        metric: Union[str, Callable[["Dataset", "Dataset"], Dict[str, float]]] = "accuracy",
-        loss_class=losses.CosineSimilarityLoss,
-        num_iterations: int = 20,
-        num_epochs: int = 1,
-        learning_rate: float = 2e-5,
-        batch_size: int = 16,
-        seed: int = 42,
-        column_mapping: Optional[Dict[str, str]] = None,
-        use_amp: bool = False,
-        warmup_proportion: float = 0.1,
-        distance_metric: Callable = BatchHardTripletLossDistanceFunction.cosine_distance,
-        margin: float = 0.25,
-        samples_per_label: int = 2,
-        callback_for_training_progress : Callable [[int,int],None] =None
+            self,
+            model: Optional["SetFitModel"] = None,
+            train_dataset: Optional["Dataset"] = None,
+            eval_dataset: Optional["Dataset"] = None,
+            model_init: Optional[Callable[[], "SetFitModel"]] = None,
+            metric: Union[str, Callable[["Dataset", "Dataset"], Dict[str, float]]] = "accuracy",
+            loss_class=losses.CosineSimilarityLoss,
+            num_iterations: int = 20,
+            num_epochs: int = 1,
+            learning_rate: float = 2e-5,
+            batch_size: int = 16,
+            seed: int = 42,
+            column_mapping: Optional[Dict[str, str]] = None,
+            use_amp: bool = False,
+            warmup_proportion: float = 0.1,
+            distance_metric: Callable = BatchHardTripletLossDistanceFunction.cosine_distance,
+            margin: float = 0.25,
+            samples_per_label: int = 2,
+            callback_for_training_progress: Callable[[int, int], None] = None,
     ):
         if (warmup_proportion < 0.0) or (warmup_proportion > 1.0):
             raise ValueError(
@@ -276,15 +275,15 @@ class SetFitTrainer:
             self.model.unfreeze("body")
 
     def train(
-        self,
-        num_epochs: Optional[int] = None,
-        batch_size: Optional[int] = None,
-        learning_rate: Optional[float] = None,
-        body_learning_rate: Optional[float] = None,
-        l2_weight: Optional[float] = None,
-        max_length: Optional[int] = None,
-        trial: Optional[Union["optuna.Trial", Dict[str, Any]]] = None,
-        show_progress_bar: bool = True,
+            self,
+            num_epochs: Optional[int] = None,
+            batch_size: Optional[int] = None,
+            learning_rate: Optional[float] = None,
+            body_learning_rate: Optional[float] = None,
+            l2_weight: Optional[float] = None,
+            max_length: Optional[int] = None,
+            trial: Optional[Union["optuna.Trial", Dict[str, Any]]] = None,
+            show_progress_bar: bool = True,
     ):
         """
         Main training entry point.
@@ -396,7 +395,7 @@ class SetFitTrainer:
                 warmup_steps=warmup_steps,
                 show_progress_bar=show_progress_bar,
                 use_amp=self.use_amp,
-                callback_for_training_progress = self.callback_for_training_progress
+                callback_for_training_progress= self.callback_for_training_progress,
             )
 
         if not self.model.has_differentiable_head or not self._freeze:
@@ -411,6 +410,7 @@ class SetFitTrainer:
                 l2_weight=l2_weight,
                 max_length=max_length,
                 show_progress_bar=True,
+                callback_for_training_progress=self.callback_for_training_progress
             )
 
     def evaluate(self):
@@ -447,14 +447,14 @@ class SetFitTrainer:
             raise ValueError("metric must be a string or a callable")
 
     def hyperparameter_search(
-        self,
-        hp_space: Optional[Callable[["optuna.Trial"], Dict[str, float]]] = None,
-        compute_objective: Optional[Callable[[Dict[str, float]], float]] = None,
-        n_trials: int = 10,
-        direction: str = "maximize",
-        backend: Optional[Union["str", HPSearchBackend]] = None,
-        hp_name: Optional[Callable[["optuna.Trial"], str]] = None,
-        **kwargs,
+            self,
+            hp_space: Optional[Callable[["optuna.Trial"], Dict[str, float]]] = None,
+            compute_objective: Optional[Callable[[Dict[str, float]], float]] = None,
+            n_trials: int = 10,
+            direction: str = "maximize",
+            backend: Optional[Union["str", HPSearchBackend]] = None,
+            hp_name: Optional[Callable[["optuna.Trial"], str]] = None,
+            **kwargs,
     ) -> BestRun:
         """
         Launch a hyperparameter search using `optuna`. The optimized quantity is determined
@@ -523,18 +523,18 @@ class SetFitTrainer:
         return best_run
 
     def push_to_hub(
-        self,
-        repo_path_or_name: Optional[str] = None,
-        repo_url: Optional[str] = None,
-        commit_message: Optional[str] = "Add SetFit model",
-        organization: Optional[str] = None,
-        private: Optional[bool] = None,
-        api_endpoint: Optional[str] = None,
-        use_auth_token: Optional[Union[bool, str]] = None,
-        git_user: Optional[str] = None,
-        git_email: Optional[str] = None,
-        config: Optional[dict] = None,
-        skip_lfs_files: bool = False,
+            self,
+            repo_path_or_name: Optional[str] = None,
+            repo_url: Optional[str] = None,
+            commit_message: Optional[str] = "Add SetFit model",
+            organization: Optional[str] = None,
+            private: Optional[bool] = None,
+            api_endpoint: Optional[str] = None,
+            use_auth_token: Optional[Union[bool, str]] = None,
+            git_user: Optional[str] = None,
+            git_email: Optional[str] = None,
+            config: Optional[dict] = None,
+            skip_lfs_files: bool = False,
     ):
         return self.model.push_to_hub(
             repo_path_or_name,
