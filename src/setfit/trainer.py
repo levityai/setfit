@@ -284,6 +284,7 @@ class SetFitTrainer:
             max_length: Optional[int] = None,
             trial: Optional[Union["optuna.Trial", Dict[str, Any]]] = None,
             show_progress_bar: bool = True,
+           
     ):
         """
         Main training entry point.
@@ -394,8 +395,7 @@ class SetFitTrainer:
                 optimizer_params={"lr": learning_rate},
                 warmup_steps=warmup_steps,
                 show_progress_bar=show_progress_bar,
-                use_amp=self.use_amp,
-                callback_for_training_progress= self.callback_for_training_progress,
+                use_amp=self.use_amp
             )
 
         if not self.model.has_differentiable_head or not self._freeze:
@@ -409,8 +409,7 @@ class SetFitTrainer:
                 body_learning_rate=body_learning_rate,
                 l2_weight=l2_weight,
                 max_length=max_length,
-                show_progress_bar=True,
-                callback_for_training_progress=self.callback_for_training_progress
+                show_progress_bar=True
             )
 
     def evaluate(self):

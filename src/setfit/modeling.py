@@ -286,8 +286,7 @@ class SetFitModel(PyTorchModelHubMixin):
         body_learning_rate: Optional[float] = None,
         l2_weight: Optional[float] = None,
         max_length: Optional[int] = None,
-        show_progress_bar: Optional[bool] = None,
-        callback_for_training_progress: Callable[[int, int], None] = None,
+        show_progress_bar: Optional[bool] = None
     ) -> None:
         if self.has_differentiable_head:  # train with pyTorch
             device = self.model_body.device
