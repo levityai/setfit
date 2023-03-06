@@ -5,6 +5,7 @@ import evaluate
 import numpy as np
 from datasets import DatasetDict
 from sentence_transformers import InputExample, losses
+from sentence_transformers import SentenceTransformer
 from sentence_transformers.datasets import SentenceLabelDataset
 from sentence_transformers.losses.BatchHardTripletLoss import BatchHardTripletLossDistanceFunction
 from torch.utils.data import DataLoader
@@ -395,6 +396,7 @@ class SetFitTrainer:
                 warmup_steps=warmup_steps,
                 show_progress_bar=show_progress_bar,
                 use_amp=self.use_amp,
+                callback_for_training_progress=self.callback_for_training_progress
             )
 
         if not self.model.has_differentiable_head or not self._freeze:
