@@ -179,7 +179,7 @@ class SetFitHead(models.Dense):
                 confident and higher values makes it more confident.
                 Will override the temperature given during initialization.
         Returns:
-        [`Dict[str, torch.Tensor]` or `Tuple[torch.Tensor]`]
+            [`Dict[str, torch.Tensor]` or `Tuple[torch.Tensor]`]
         """
         temperature = temperature or self.temperature
         is_features_dict = False  # whether `features` is dict or not
@@ -472,10 +472,11 @@ class SetFitModel(PyTorchModelHubMixin):
     def __call__(self, inputs):
         return self.predict(inputs)
 
-    def _save_pretrained(self, save_directory: str) -> None:
+    def _save_pretrained(self, save_directory: Union[Path, str]) -> None:
+        save_directory = str(save_directory)
         self.model_body.save(path=save_directory, create_model_card=False)
         self.create_model_card(path=save_directory, model_name=save_directory)
-        joblib.dump(self.model_head, f"{save_directory}/{MODEL_HEAD_NAME}")
+        joblib.dump(self.model_head, str(Path(save_directory) / MODEL_HEAD_NAME))
 
     @classmethod
     def _from_pretrained(
@@ -566,7 +567,7 @@ class SetFitModel(PyTorchModelHubMixin):
                 else:
                     model_head = clf
 
-        return SetFitModel(
+        return cls(
             model_body=model_body,
             model_head=model_head,
             multi_target_strategy=multi_target_strategy,
